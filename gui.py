@@ -1703,9 +1703,11 @@ class SettingsPanel:
     def change_theme(self):
         self._settings.dark_theme = bool(self._vars["dark_theme"].get())
         if self._settings.dark_theme:
-            set_theme(self._root, self._manager, "dark")
+            # set_theme(self._root, self._manager, "dark")
+            self._root.tk.call("set_theme", "dark")
         else:
-            set_theme(self._root, self._manager,  "light")
+            self._root.tk.call("set_theme", "light")
+            # set_theme(self._root, self._manager,  "light")
 
     def update_autostart(self) -> None:
         enabled = bool(self._vars["autostart"].get())
@@ -1945,6 +1947,14 @@ class GUIManager:
         # withdraw immediately to prevent the window from flashing
         self._root.withdraw()
         # root.resizable(False, True)
+
+        # Set up Azure theme
+        root.tk.call('source', resource_path('azure.tcl'))
+        if self._twitch.settings.dark_theme:
+            root.tk.call("set_theme", "dark")
+        else:
+            root.tk.call("set_theme", "light")
+
         set_root_icon(root, resource_path("pickaxe.ico"))
         root.title(WINDOW_TITLE)  # window title
         root.bind_all("<KeyPress-Escape>", self.unfocus)  # pressing ESC unfocuses selection
@@ -1971,21 +1981,21 @@ class GUIManager:
         )
         # remove Notebook.focus from the Notebook.Tab layout tree to avoid an ugly dotted line
         # on tab selection. We fold the Notebook.focus children into Notebook.padding children.
-        if theme != "classic":
-            original = style.layout("TNotebook.Tab")
-            sublayout = original[0][1]["children"][0][1]
-            sublayout["children"] = sublayout["children"][0][1]["children"]
-            style.layout("TNotebook.Tab", original)
+        # if theme != "classic":
+        #     original = style.layout("TNotebook.Tab")
+        #     sublayout = original[0][1]["children"][0][1]
+        #     sublayout["children"] = sublayout["children"][0][1]["children"]
+        #     style.layout("TNotebook.Tab", original)
         # add padding to the tab names
         style.configure("TNotebook.Tab", padding=[8, 4])
         # remove Checkbutton.focus dotted line from checkbuttons
-        if theme != "classic":
-            style.configure("TCheckbutton", padding=0)
-            original = style.layout("TCheckbutton")
-            sublayout = original[0][1]["children"]
-            sublayout[1] = sublayout[1][1]["children"][0]
-            del original[0][1]["children"][1]
-            style.layout("TCheckbutton", original)
+        # if theme != "classic":
+        #     style.configure("TCheckbutton", padding=0)
+        #     original = style.layout("TCheckbutton")
+        #     sublayout = original[0][1]["children"]
+        #     sublayout[1] = sublayout[1][1]["children"][0]
+        #     del original[0][1]["children"][1]
+        #     style.layout("TCheckbutton", original)
         # label style - green, yellow and red text
         style.configure("green.TLabel", foreground="green")
         style.configure("yellow.TLabel", foreground="goldenrod")
@@ -2073,10 +2083,22 @@ class GUIManager:
         else:
             self._root.after_idle(self._root.deiconify)
 
-        if self._twitch.settings.dark_theme:
-            set_theme(root, self, "dark")
-        else:
-            set_theme(root, self, "default")
+        # if self._twitch.settings.dark_theme:
+        #     set_theme(root, self, "dark")
+        # else:
+        #     set_theme(root, self, "default")
+
+        # Add theme toggle method
+    #     self.toggle_theme()
+
+    # def toggle_theme(self):
+    #     if self._root.tk.call("ttk::style", "theme", "use") == "azure-dark":
+    #         self._root.tk.call("set_theme", "light")
+    #         self._twitch.settings.dark_theme = False
+    #     else:
+    #         self._root.tk.call("set_theme", "dark")
+    #         self._twitch.settings.dark_theme = True
+
 
     # https://stackoverflow.com/questions/56329342/tkinter-treeview-background-tag-not-working
     def _fixed_map(self, option):

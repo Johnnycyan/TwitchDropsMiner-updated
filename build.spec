@@ -21,6 +21,8 @@ to_add: list[tuple[Path, str, bool]] = [
     # SeleniumWire HTTPS/SSL cert file and key
     (Path(SITE_PACKAGES_PATH, "seleniumwire/ca.crt"), "./seleniumwire", False),
     (Path(SITE_PACKAGES_PATH, "seleniumwire/ca.key"), "./seleniumwire", False),
+    (Path("azure.tcl"), '.', True),  # Azure theme main file
+    (Path("theme"), 'theme', True),  # Azure theme images folder
 ]
 for lang_filepath in WORKING_DIR.joinpath("lang").glob("*.json"):
     to_add.append((lang_filepath, "lang", True))
