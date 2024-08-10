@@ -3,10 +3,10 @@ name: Build dev version
 on:
   push:
     branches:
-      - 'master'
+      - 'master-1'
   pull_request:
     branches:
-      - 'master'
+      - 'master-1'
   workflow_dispatch:
 
 env:
